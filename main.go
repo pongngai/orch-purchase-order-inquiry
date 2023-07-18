@@ -2,6 +2,7 @@ package main
 
 import (
 	"com.ai.orch-purchase-order-inquiry/grpc/server"
+	"com.ai.orch-purchase-order-inquiry/infrastructure/gormrepository"
 	"log"
 	"net"
 
@@ -11,6 +12,7 @@ import (
 func main() {
 	// Create a new gRPC server
 	srv := grpc.NewServer()
+	gormrepository.Initialize()
 
 	// Register the gRPC service implementation
 	server.RegisterOrderServiceServer(srv)

@@ -2,33 +2,19 @@ package gormrepository
 
 import (
 	"com.ai.orch-purchase-order-inquiry/query"
-	"fmt"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
 )
 
-var (
+type GormPurchaseOrderHistoryRepository struct {
 	db *gorm.DB
-)
-
-// Initialize initializes the database connection.
-func Initialize() {
-	database, err := gorm.Open(postgres.Open(fmt.Sprintf("host=localhost user=postgres password=34647de759 dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Bangkok")))
-	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
-	}
-
-	db = database
 }
 
-// GetDB returns the database instance.
-func GetDB() *gorm.DB {
-	return db
+func NewPurchaseOrderHistoryRepository(gormDB *gorm.DB) *GormPurchaseOrderHistoryRepository {
+	return &GormPurchaseOrderHistoryRepository{db: gormDB}
 }
 
-func GetByOrderId(orderId int) (*query.PurchaseOrderHistory, error) {
+func (repo GormPurchaseOrderHistoryRepository) GetByOrderId(orderId int) (*query.PurchaseOrderHistory, error) {
 	var purchaseOrderHistory query.PurchaseOrderHistory
-	err := GetDB().Model(&query.PurchaseOrderHistory{}).Where(&query.PurchaseOrderHistory{ItemId: orderId}).First(&purchaseOrderHistory).Error
+	err := repo.db.Model(&query.PurchaseOrderHistory{}).Where(&query.PurchaseOrderHistory{ItemId: orderId}).First(&purchaseOrderHistory).Error
 	return &purchaseOrderHistory, err
 }

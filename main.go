@@ -1,6 +1,7 @@
 package main
 
 import (
+	db "com.ai.orch-purchase-order-inquiry/config/db"
 	"com.ai.orch-purchase-order-inquiry/grpc/server"
 	"com.ai.orch-purchase-order-inquiry/infrastructure/gormrepository"
 	"log"
@@ -12,10 +13,11 @@ import (
 func main() {
 	// Create a new gRPC server
 	srv := grpc.NewServer()
-	gormrepository.Initialize()
+	dbInstance := db.New()
 
+	purchaseOrderHistoryRepository := gormrepository.NewPurchaseOrderHistoryRepository(dbInstance)
 	// Register the gRPC service implementation
-	server.RegisterOrderServiceServer(srv)
+	server.RegisterOrderServiceServer(srv, purchaseOrderHistoryRepository)
 
 	// Start the gRPC server
 	listen, err := net.Listen("tcp", ":50051")

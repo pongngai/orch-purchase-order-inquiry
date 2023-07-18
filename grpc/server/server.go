@@ -11,17 +11,20 @@ import (
 // OrderServiceServer is the implementation of the gRPC service.
 type OrderServiceServer struct {
 	pb.UnimplementedOrderServiceServer
+	purchaseOrderHistoryRepository *gormrepository.GormPurchaseOrderHistoryRepository
 }
 
 // RegisterOrderServiceServer registers the OrderServiceServer implementation to the gRPC server.
-func RegisterOrderServiceServer(s *grpc.Server) {
-	pb.RegisterOrderServiceServer(s, &OrderServiceServer{})
+func RegisterOrderServiceServer(s *grpc.Server, purchaseOrderHistoryRepository *gormrepository.GormPurchaseOrderHistoryRepository) {
+	pb.RegisterOrderServiceServer(s, &OrderServiceServer{
+		purchaseOrderHistoryRepository: purchaseOrderHistoryRepository,
+	})
 }
 
 // GetOrder retrieves a order by ID.
 func (s *OrderServiceServer) GetOrder(ctx context.Context, req *pb.GetOrderRequest) (*pb.GetOrderResponse, error) {
 	orderId, _ := strconv.Atoi(req.Id)
-	order, err := gormrepository.GetByOrderId(orderId)
+	order, err := s.purchaseOrderHistoryRepository.GetByOrderId(orderId)
 	if err != nil {
 		return nil, err
 	}

@@ -28,7 +28,7 @@ func GetDB() *gorm.DB {
 }
 
 func GetByOrderId(orderId int) (*query.PurchaseOrderHistory, error) {
-	var partnerUser query.PurchaseOrderHistory
-	err := GetDB().Model(&query.PurchaseOrderHistory{}).Where(&query.PurchaseOrderHistory{ItemId: orderId}).First(&partnerUser).Error
-	return &partnerUser, err
+	var purchaseOrderHistory query.PurchaseOrderHistory
+	err := GetDB().Model(&query.PurchaseOrderHistory{}).Where(&query.PurchaseOrderHistory{ItemId: orderId}).First(&purchaseOrderHistory).Error
+	return &purchaseOrderHistory, err
 }
